@@ -10,6 +10,7 @@ class Examples extends CI_Controller {
 		$this->load->helper('url');
 
 		$this->load->library('grocery_CRUD');
+		$this->load->library('image_CRUD');
 	}
 
 	public function _example_output($output = null)
@@ -49,21 +50,34 @@ class Examples extends CI_Controller {
 		}
 	}
 
-	public function employees_management()
+	public function programmation_management()
 	{
 			$crud = new grocery_CRUD();
 
 			$crud->set_theme('datatables');
-			$crud->set_table('employees');
-			$crud->set_relation('officeCode','offices','city');
-			$crud->display_as('officeCode','Office City');
-			$crud->set_subject('Employee');
+			$crud->set_table('programmation');
+			$crud->set_relation('id_type_spectacle','type_spectacle','nom_type_spectacle');
+			$crud->display_as('id_type_spectacle','Type de spectacle');
+			$crud->set_relation('type_prog_id','type_prog','type_prog');
+			$crud->display_as('type_prog_id','Type');
+			$crud->set_subject('Prog');
 
-			$crud->required_fields('lastName');
+			//$crud->required_fields('lastName');
 
-			$crud->set_field_upload('file_url','assets/uploads/files');
+			$crud->set_field_upload('vignette_spectacle','../public/webdoc/spectacle_picture/vignette');
 
-			$output = $crud->render();
+
+			$image_crud = new image_CRUD();
+			$image_crud->set_table('spectacle_img');
+ 
+		    $image_crud->set_primary_key_field('id');
+		    $image_crud->set_url_field('nom_img');
+		 
+		    $image_crud->set_relation_field('programmation_id')
+					    ->set_image_path('../public/webdoc/spectacle_picture');
+
+			$output =  $crud->render();
+			//$output = $image_crud->render();
 
 			$this->_example_output($output);
 	}
